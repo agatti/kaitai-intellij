@@ -14,7 +14,7 @@ import org.jetbrains.yaml.YAMLFileType
 
 class KaitaiFileTypeDetector : FileTypeDetector {
     override fun detect(file: VirtualFile, firstBytes: ByteSequence, firstCharsIfText: CharSequence?): FileType? =
-        if (file.nameSequence.endsWith("ksy")) {
+        if (isKaitaiFile(file)) {
             YAMLFileType.YML
         } else {
             null

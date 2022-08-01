@@ -14,7 +14,7 @@ import javax.swing.Icon
 
 class KaitaiFileIconProvider : FileIconProvider {
     override fun getIcon(file: VirtualFile, flags: Int, project: Project?): Icon? =
-        if (file.nameSequence.endsWith("ksy")) {
+        if (isKaitaiFile(file)) {
             FILE_ICON
         } else null
 

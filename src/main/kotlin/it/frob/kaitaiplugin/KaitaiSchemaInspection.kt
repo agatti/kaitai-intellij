@@ -48,7 +48,7 @@ class KaitaiSchemaInspection : LocalInspectionTool() {
         isOnTheFly: Boolean,
         session: LocalInspectionToolSession
     ): PsiElementVisitor {
-        if (!holder.file.name.endsWith("ksy")) {
+        if (!isKaitaiFile(holder.file)) {
             return PsiElementVisitor.EMPTY_VISITOR
         }
         val documents = (holder.file as YAMLFile).documents
