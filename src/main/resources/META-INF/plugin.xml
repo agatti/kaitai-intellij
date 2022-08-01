@@ -1,0 +1,19 @@
+<idea-plugin>
+    <id>it.frob.intellijkaitai</id>
+    <name>Kaitai Struct Files Support</name>
+    <vendor email="a.gatti@frob.it" url="https://github.com/agatti/kaitai-intellij">Alessandro Gatti</vendor>
+
+    <description><![CDATA[This plugin adds (basic) support for Kaitai Struct definition files.]]></description>
+
+    <depends>org.jetbrains.plugins.yaml</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <localInspection language="yaml" displayName="Kaitai Struct JSON Schema"
+                         groupName="Kaitai Struct"
+                         enabledByDefault="true"
+                         level="ERROR"
+                         implementationClass="it.frob.kaitaiplugin.KaitaiSchemaInspection"/>
+        <fileIconProvider implementation="it.frob.kaitaiplugin.KaitaiFileIconProvider"/>
+        <fileTypeDetector implementation="it.frob.kaitaiplugin.KaitaiFileTypeDetector"/>
+    </extensions>
+</idea-plugin>
