@@ -8,12 +8,12 @@
     <depends>org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <localInspection language="yaml" displayName="Kaitai Struct JSON Schema"
-                         groupName="Kaitai Struct"
-                         enabledByDefault="true"
-                         level="ERROR"
+        <localInspection language="yaml" displayName="Kaitai Struct JSON Schema" groupName="Kaitai Struct"
+                         enabledByDefault="true" level="ERROR"
                          implementationClass="it.frob.kaitaiplugin.KaitaiSchemaInspection"/>
         <fileIconProvider implementation="it.frob.kaitaiplugin.KaitaiFileIconProvider"/>
         <fileTypeDetector implementation="it.frob.kaitaiplugin.KaitaiFileTypeDetector"/>
+        <psi.referenceContributor implementation="it.frob.kaitaiplugin.KaitaiFileReferenceContributor"
+                                  language="yaml"/>
     </extensions>
 </idea-plugin>
