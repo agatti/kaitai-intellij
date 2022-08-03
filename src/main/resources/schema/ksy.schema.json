@@ -513,11 +513,11 @@
           "type": "string"
         },
         "pad-right": {
-          "type": "integer",
+          "$ref": "#/definitions/AnyInteger",
           "description": "specify a byte which is the string or byte array padded with after the end up to the total size\n\ncan be used only with `size` or `size-eos: true` (when the size is fixed)\n\nwhen `terminator`:\n - isn't specified, then the `pad-right` controls where the string ends (basically acts like a terminator)\n - is specified, padding comes after the terminator, not before. The value is terminated immediately after the terminator occurs, so the `pad-right` has no effect on parsing and is only relevant for serialization"
         },
         "terminator": {
-          "type": "integer",
+          "$ref": "#/definitions/AnyInteger",
           "description": "string or byte array reading will stop when it encounters this byte\n\ncannot be used with `type: strz` (which already implies `terminator: 0` - null-terminated string)"
         },
         "consume": {
@@ -610,7 +610,7 @@
           "type": "string"
         },
         {
-          "type": "integer"
+          "$ref": "#/definitions/AnyInteger"
         }
       ]
     },
@@ -784,13 +784,24 @@
           "type": "number"
         },
         {
-          "type": "integer"
+          "$ref": "#/definitions/AnyInteger"
         },
         {
           "type": "boolean"
         },
         {
           "type": "null"
+        }
+      ]
+    },
+    "AnyInteger": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string",
+          "pattern": "^-?0[xX][0-9a-fA-F]+$"
         }
       ]
     }
