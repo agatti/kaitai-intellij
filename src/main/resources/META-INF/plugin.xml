@@ -15,5 +15,7 @@
         <fileTypeDetector implementation="it.frob.kaitaiplugin.KaitaiFileTypeDetector"/>
         <psi.referenceContributor implementation="it.frob.kaitaiplugin.KaitaiFileReferenceContributor"
                                   language="yaml"/>
+        <completion.contributor implementationClass="it.frob.kaitaiplugin.KaitaiFileCompletionContributor"
+                                language="yaml"/>
     </extensions>
 </idea-plugin>
