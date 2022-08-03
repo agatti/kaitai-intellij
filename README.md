@@ -7,13 +7,15 @@ JetBrains' IDEs. The earliest supported version of the IDEs set is 2021.1.
 
 * File type recognition
 * Schema validation
+* Imports autocompletion
+* Basic types autocompletion
 
 ## What is not there
 
 Pretty much everything else:
 
 * Imports path validation
-* Autocompletion support
+* Full autocompletion support
 * Rename refactoring
 * etc.
 

@@ -42,6 +42,43 @@ class KaitaiFileCompletionContributor : CompletionContributor() {
                 ),
             ImportsCompletionProvider()
         )
+
+        extend(
+            CompletionType.BASIC,
+            PlatformPatterns.psiElement()
+                .withLanguage(YAMLLanguage.INSTANCE)
+                .with(object : PatternCondition<PsiElement>("isInKaitaiFile") {
+                    override fun accepts(element: PsiElement, context: ProcessingContext?): Boolean =
+                        isInKaitaiFile(element)
+                })
+                .withSuperParent(
+                    2,
+                    PlatformPatterns.psiElement(YAMLKeyValue::class.java)
+                        .with(object : PatternCondition<YAMLKeyValue>("") {
+                            override fun accepts(element: YAMLKeyValue, context: ProcessingContext?): Boolean {
+                                return element.keyText == "type"
+                            }
+                        })
+                ),
+            object : CompletionProvider<CompletionParameters>() {
+                override fun addCompletions(
+                    parameters: CompletionParameters,
+                    context: ProcessingContext,
+                    result: CompletionResultSet
+                ) {
+                    result.addAllElements(
+                        listOf(
+                            "f4", "f8", "f4be", "f8be", "f4le", "f8le",
+                            "s1", "s2", "s4", "s8", "s1be", "s2be", "s4be", "s8be", "s1le", "s2le", "s4le", "s8le",
+                            "u1", "u2", "u4", "u8", "u1be", "u2be", "u4be", "u8be", "u1le", "u2le", "u4le", "u8le",
+                            "str", "strz"
+                        ).map { type ->
+                            LookupElementBuilder.create(type)
+                        }
+                    )
+                }
+            }
+        )
     }
 
     override fun beforeCompletion(context: CompletionInitializationContext) {
