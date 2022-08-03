@@ -14,6 +14,7 @@ JetBrains' IDEs. The earliest supported version of the IDEs set is 2021.1.
 
 Pretty much everything else:
 
+* JSON Schema support for `valid` keys
 * Imports path validation
 * Full autocompletion support
 * Rename refactoring
@@ -35,7 +36,9 @@ the plugin by pointing the IDE to that file when importing external plugins.
 
 * Both the IDE filetype icon and the plugin's own icon come from a traced version
   of [Kaitai's logo](https://kaitai.io/img/kaitai_16x_dark.png).
-* The included JSON schema comes from [Kaitai's own schema repository](https://github.com/kaitai-io/ksy_schema).
+* The included JSON schema is an updated version of the one found
+  in [Kaitai's own schema repository](https://github.com/kaitai-io/ksy_schema), which is not up to date with what the
+  structure compiler is able to parse.
 
 A copy of the Apache 2.0 licence is available in the repository as `LICENCE.txt`.
 
