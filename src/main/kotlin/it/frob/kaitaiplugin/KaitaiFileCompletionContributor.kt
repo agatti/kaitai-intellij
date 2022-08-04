@@ -21,17 +21,18 @@ import java.nio.file.Path
 
 private const val DUMMY_IDENTIFIER = '\u001F'
 
+/**
+ * Custom [CompletionContributor] to provide autocompletion entries for Kaitai Struct files.
+ */
 class KaitaiFileCompletionContributor : CompletionContributor() {
     init {
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement()
-                .withLanguage(YAMLLanguage.INSTANCE)
+            PlatformPatterns.psiElement().withLanguage(YAMLLanguage.INSTANCE)
                 .with(object : PatternCondition<PsiElement>("isInKaitaiFile") {
                     override fun accepts(element: PsiElement, context: ProcessingContext?): Boolean =
                         isInKaitaiFile(element)
-                })
-                .withSuperParent(
+                }).withSuperParent(
                     4,
                     PlatformPatterns.psiElement(YAMLKeyValue::class.java)
                         .with(object : PatternCondition<YAMLKeyValue>("") {
@@ -45,13 +46,11 @@ class KaitaiFileCompletionContributor : CompletionContributor() {
 
         extend(
             CompletionType.BASIC,
-            PlatformPatterns.psiElement()
-                .withLanguage(YAMLLanguage.INSTANCE)
+            PlatformPatterns.psiElement().withLanguage(YAMLLanguage.INSTANCE)
                 .with(object : PatternCondition<PsiElement>("isInKaitaiFile") {
                     override fun accepts(element: PsiElement, context: ProcessingContext?): Boolean =
                         isInKaitaiFile(element)
-                })
-                .withSuperParent(
+                }).withSuperParent(
                     2,
                     PlatformPatterns.psiElement(YAMLKeyValue::class.java)
                         .with(object : PatternCondition<YAMLKeyValue>("") {
@@ -60,19 +59,7 @@ class KaitaiFileCompletionContributor : CompletionContributor() {
                             }
                         })
                 ),
-            object : CompletionProvider<CompletionParameters>() {
-                override fun addCompletions(
-                    parameters: CompletionParameters,
-                    context: ProcessingContext,
-                    result: CompletionResultSet
-                ) {
-                    result.addAllElements(
-                        STANDARD_TYPES.map { type ->
-                            LookupElementBuilder.create(type)
-                        }
-                    )
-                }
-            }
+            TypesCompletionProvider()
         )
     }
 
@@ -81,21 +68,21 @@ class KaitaiFileCompletionContributor : CompletionContributor() {
     }
 }
 
+/**
+ * Custom [CompletionProvider] to provide autocompletion entries for imports.
+ */
 private class ImportsCompletionProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(
         parameters: CompletionParameters,
         context: ProcessingContext,
         result: CompletionResultSet
     ) {
-        val parent: VirtualFile =
-            parameters.position.containingFile.originalFile.virtualFile?.parent ?: return
+        val parent: VirtualFile = parameters.position.containingFile.originalFile.virtualFile?.parent ?: return
 
-        val completionText =
-            parameters.position.text.replace(
-                Regex("$DUMMY_IDENTIFIER.*", RegexOption.DOT_MATCHES_ALL),
-                ""
-            )
-                .trim()
+        val completionText = parameters.position.text.replace(
+            Regex("$DUMMY_IDENTIFIER.*", RegexOption.DOT_MATCHES_ALL),
+            ""
+        ).trim()
 
         if (completionText.isNotEmpty()) {
             val pathPrefix = completionText.split("/").dropLast(1).joinToString("/")
@@ -134,4 +121,22 @@ private class ImportsCompletionProvider : CompletionProvider<CompletionParameter
                 LookupElementBuilder.create(child)
             }
         } ?: emptyList()
+}
+
+/**
+ * Custom [CompletionProvider] to provide autocompletion entries for types.
+ */
+private class TypesCompletionProvider : CompletionProvider<CompletionParameters>() {
+    override fun addCompletions(
+        parameters: CompletionParameters,
+        context: ProcessingContext,
+        result: CompletionResultSet
+    ) {
+        result.addAllElements(
+            TypesVisitor().accept(parameters.position.containingFile).map { type ->
+                LookupElementBuilder.create((type as YAMLKeyValue).keyText)
+            }
+        )
+        result.addAllElements(STANDARD_TYPES.map { type -> LookupElementBuilder.create(type) })
+    }
 }

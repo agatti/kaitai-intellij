@@ -12,14 +12,9 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.patterns.*
 import com.intellij.psi.*
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import com.intellij.util.ProcessingContext
-import org.jetbrains.yaml.YAMLElementTypes
 import org.jetbrains.yaml.YAMLLanguage
-import org.jetbrains.yaml.psi.YAMLDocument
 import org.jetbrains.yaml.psi.YAMLKeyValue
-import org.jetbrains.yaml.psi.YAMLMapping
 import org.jetbrains.yaml.psi.YAMLScalar
 
 /**
@@ -92,62 +87,10 @@ class KaitaiFileReferenceContributor : PsiReferenceContributor() {
                 ): Array<PsiReference> = if (isStandardType(element.text)) {
                     emptyArray()
                 } else {
-                    arrayOf(TypeReference(element, TypesCollector().accept(element.containingFile)))
+                    arrayOf(TypeReference(element, TypesVisitor().accept(element.containingFile)))
                 }
             }
         )
-    }
-}
-
-/**
- * Element visitor that collects custom type definitions as they are found.
- */
-class TypesCollector : PsiElementVisitor() {
-
-    /**
-     * The collected types.
-     */
-    private val types: MutableSet<PsiElement> = mutableSetOf()
-
-    override fun visitElement(element: PsiElement) {
-        super.visitElement(element)
-
-        when {
-            element.elementType == YAMLElementTypes.KEY_VALUE_PAIR && (element as YAMLKeyValue).keyText == "types" &&
-                element.parent.parent is YAMLDocument -> {
-                element.children
-                    .filter { child -> child.elementType == YAMLElementTypes.MAPPING }
-                    .flatMap { child -> (child as YAMLMapping).keyValues }
-                    .filterNotNull()
-                    .forEach { child ->
-                        types.add(child)
-                    }
-            }
-
-            element.elementType == YAMLElementTypes.SCALAR_PLAIN_VALUE &&
-                PsiTreeUtil.findFirstParent(element) { parentPsiElement ->
-                (parentPsiElement.elementType == YAMLElementTypes.KEY_VALUE_PAIR) &&
-                    (parentPsiElement as YAMLKeyValue).keyText == "imports"
-            } != null -> {
-                resolveImport(element).file?.let { psiFile ->
-                    visitFile(psiFile)
-                }
-            }
-
-            else -> element.acceptChildren(this)
-        }
-    }
-
-    /**
-     * Start traversing the element tree, collecting custom type definitions.
-     *
-     * @param element the [PsiElement] to start the traversal from.
-     * @return a list of [PsiElement] that contain the custom type definitions.
-     */
-    fun accept(element: PsiElement): List<PsiElement> {
-        types.clear()
-        element.accept(this)
-        return types.toList()
     }
 }
 
