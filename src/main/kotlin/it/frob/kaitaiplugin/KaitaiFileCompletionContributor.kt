@@ -67,12 +67,7 @@ class KaitaiFileCompletionContributor : CompletionContributor() {
                     result: CompletionResultSet
                 ) {
                     result.addAllElements(
-                        listOf(
-                            "f4", "f8", "f4be", "f8be", "f4le", "f8le",
-                            "s1", "s2", "s4", "s8", "s1be", "s2be", "s4be", "s8be", "s1le", "s2le", "s4le", "s8le",
-                            "u1", "u2", "u4", "u8", "u1be", "u2be", "u4be", "u8be", "u1le", "u2le", "u4le", "u8le",
-                            "str", "strz"
-                        ).map { type ->
+                        STANDARD_TYPES.map { type ->
                             LookupElementBuilder.create(type)
                         }
                     )
