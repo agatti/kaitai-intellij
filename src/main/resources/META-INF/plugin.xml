@@ -17,5 +17,6 @@
                                   language="yaml"/>
         <completion.contributor implementationClass="it.frob.kaitaiplugin.KaitaiFileCompletionContributor"
                                 language="yaml"/>
+        <include.provider implementation="it.frob.kaitaiplugin.KaitaiFileIncludeProvider"/>
     </extensions>
 </idea-plugin>
